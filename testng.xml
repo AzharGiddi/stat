@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite1" >
+
+
+	<listeners>
+		<listener class-name="com.nissan.automation.core.utils.listeners.ConfigListener" />
+		<!-- <listener class-name="com.nissan.utils.listeners.ConfigListenerExtended" /> -->
+		
+		
+	</listeners>
+
+	<test name="Test1" thread-count="4" parallel="methods">
+
+		<classes>
+			<class name="com.nissan.tests.FOneTests">
+				<methods>
+					<!-- <include name="test05" /> -->
+					<!-- <include name="test09" /> -->
+					<include name="test05" />
+					<include name="test06" />
+					<include name="test07" />
+					<include name="test08" />
+					<include name="test11" />
+
+				</methods>
+			</class>
+
+		</classes>
+	</test> <!-- Test -->
+
+</suite> <!-- Suite -->
