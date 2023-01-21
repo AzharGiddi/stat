@@ -1,9 +1,8 @@
 package com.automation.core.utils;
 
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 import org.testng.annotations.Test;
 
@@ -145,6 +144,17 @@ public class APIUtil {
 			String path) {
 
 		return getResponse(dataPageName, params).jsonPath().getJsonObject(path);
+	}
+	
+	
+	public static Response post(String uri,Map<String,String> params, String reqBody, int statusCode) {
+		
+		return RestAssured.given().params(params).when().body(reqBody).post(uri).then().statusCode(statusCode).extract().response();
+	}
+	
+public static Response post(String uri,Map<String,String> params, File reqBody, int statusCode) {
+		
+		return RestAssured.given().params(params).when().body(reqBody).post(uri).then().statusCode(statusCode).extract().response();
 	}
 
 	@Test
