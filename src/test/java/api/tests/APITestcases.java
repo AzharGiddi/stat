@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hamcrest.Matchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
@@ -59,6 +60,54 @@ public class APITestcases {
 		
 		
 	}
+	
+	//create new Name
+	@Test
+	public void create() {
+		
+		FormTag formTag = new FormTag();
+		String formTagName = "Testing_Auto_1";
+		Response response = formTag.create(formTagName,200);
+		response.then().body("error", Matchers.equalTo(false))
+		.body("data.formtagname", Matchers.equalTo(formTagName.toLowerCase()))
+		.body("data._id", Matchers.hasSize(24));
+		System.out.println(response.asPrettyString());
+		
+		
+	}
+	
+	//create existing, should throw error
+	@Test
+	public void createExisting() {
+		
+		
+		FormTag formTag = new FormTag();
+		String formTagName = "Testing_Auto_1";
+		String errormessage = String.format("tag with this formtagname /%s/ already exists.",formTagName);
+		Response response = formTag.create(formTagName,400);
+		response.then().body("error", Matchers.equalTo(true))
+		  .body("errormessage", Matchers.equalTo(errormessage))
+		  .body("data", Matchers.equalTo(false));
+		 
+		//System.out.println(response.asPrettyString());
+		
+	}
+	
+	@Test
+	public void createEmpty() {
+				
+		FormTag formTag = new FormTag();
+		String formTagName = "";
+		String errormessage = "\"formtagname\" is not allowed to be empty";
+		Response response = formTag.create(formTagName,400);
+		response.then().body("error", Matchers.equalTo(true))
+		  .body("errormessage", Matchers.equalTo(errormessage))
+		  .body("data", Matchers.equalTo(false));
+				
+	}
+	
+		
+	
 
 	
 	

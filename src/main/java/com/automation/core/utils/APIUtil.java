@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.testng.annotations.Test;
 
@@ -154,6 +155,7 @@ public class APIUtil {
 	public static Response post(String uri,Map<String,String> params, String reqBody, int statusCode) {
 		
 		String accessToken = getToken();
+		params = Objects.isNull(params)?new HashMap<>():params;
 		return RestAssured.given().auth().oauth2(accessToken)
 				.header("Content-Type","application/json")
 				.contentType(ContentType.JSON).params(params)
