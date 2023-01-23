@@ -171,8 +171,20 @@ public static Response post(String uri,Map<String,String> params, File reqBody, 
 
 public static Response get(String uri,Map<String,String> params, int statusCode) {
 	String accessToken = getToken();
+	params = Objects.isNull(params)?new HashMap<>():params;
 	return RestAssured.given().auth().oauth2(accessToken).header("Content-Type","application/json").contentType(ContentType.JSON).params(params).when().get(uri).then().statusCode(statusCode).extract().response();
 }
+
+public static Response delete(String uri,Map<String,String> params, int statusCode) {
+	
+	
+	String accessToken = getToken();
+	params = Objects.isNull(params)?new HashMap<>():params;
+	return RestAssured
+			.given().auth().oauth2(accessToken).header("Content-Type","application/json").contentType(ContentType.JSON).params(params)
+			.when().delete(uri)
+			.then().statusCode(statusCode).extract().response();
+	}
 
 
 public static String getToken() {

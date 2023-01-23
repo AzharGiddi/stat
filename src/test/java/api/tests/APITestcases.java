@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
+import com.api.response.pojoclasses.FormTagGetAll;
 import com.automation.core.utils.APIUtil;
 import com.google.gson.Gson;
 import com.utils.FormTag;
@@ -106,6 +109,74 @@ public class APITestcases {
 				
 	}
 	
+	//delete formTag
+	@Test
+	public void deleteFomtag() {
+		
+		FormTag formTag = new FormTag();
+		String id = "63bb9b5a438bfcc97238ae82";
+		Response response = formTag.delete(id);
+		response.then().body("error", Matchers.equalTo(false))
+			  .body("data", Matchers.equalTo(true));		
+		
+	}
+	
+	
+		//delete same formTag 2 times
+		@Test
+		public void deleteFomtagError() {
+			
+			FormTag formTag = new FormTag();
+			Response getAll = formTag.getAll();
+			FormTagGetAll formTagAll = new Gson().fromJson(getAll.asString(), FormTagGetAll.class);
+			int size = formTagAll.data.size();
+			System.out.println("size is "+size);
+			String id = formTagAll.data.get(0).id;
+			System.out.println("deleteing:"+id);
+			Response response = formTag.delete(id,200);
+			String errormessage = String.format("formtag with this id /%s/ does not exists.",id);
+			response.then().body("error", Matchers.equalTo(false))
+				  .body("data", Matchers.equalTo(true));
+			System.out.println(response.asPrettyString());
+			response = formTag.delete(id,400);
+			response.then().body("error", Matchers.equalTo(true))
+			  .body("errormessage", Matchers.equalTo(errormessage))
+			  .body("data", Matchers.equalTo(false));
+			System.out.println(response.asPrettyString());
+			
+		}
+		
+		
+		@Test
+		public void getAll() {
+			
+			FormTag formTag = new FormTag();
+			Response response = formTag.getAll();
+			response.then().body("error", Matchers.equalTo(false));
+			System.out.println(response.asPrettyString());
+			FormTagGetAll formTagAll = new Gson().fromJson(response.asString(), FormTagGetAll.class);
+			int size = formTagAll.data.size();
+			String id = formTagAll.data.get(0).id;
+			System.out.println(id);
+		}
+		
+		
+		@Test
+		public void getById() {
+			
+			FormTag formTag = new FormTag();
+			Response getAll = formTag.getAll();
+			FormTagGetAll formTagAll = new Gson().fromJson(getAll.asString(), FormTagGetAll.class);
+			String id = formTagAll.data.get(0).id;
+			Response response = formTag.getById(id);
+			System.out.println(response.asPrettyString());
+			
+			//FormTag formTag = new FormTag();
+			//Response response = formTag.getAll();
+			
+			
+		}
+
 		
 	
 

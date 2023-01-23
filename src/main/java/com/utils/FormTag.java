@@ -66,14 +66,14 @@ public class FormTag extends BaseAPIClass {
 
 	@Override
 	public Response getAll() {
-		// TODO Auto-generated method stub
-		return null;
+		String url = ConfigurationManager.getBundle().getString("base.uri") + "setting/cmms/formtag";
+		return APIUtil.get(url, null, 200);
 	}
 
 	@Override
 	public Response getById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		String url = ConfigurationManager.getBundle().getString("base.uri") + "setting/cmms/formtag/"+id;
+		return APIUtil.get(url, null, 200);
 	}
 
 	@Override
@@ -84,8 +84,16 @@ public class FormTag extends BaseAPIClass {
 
 	@Override
 	public Response delete(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		String url = ConfigurationManager.getBundle().getString("base.uri") + "setting/cmms/formtag/"+id;
+		return APIUtil.delete(url, null, 200);
+	
+	}
+	
+	
+	public Response delete(String id,int statusCode) {
+		String url = ConfigurationManager.getBundle().getString("base.uri") + "setting/cmms/formtag/"+id;
+		return APIUtil.delete(url, null, statusCode);
+	
 	}
 
 	@Override
