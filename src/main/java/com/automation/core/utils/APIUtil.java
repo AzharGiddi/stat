@@ -1,6 +1,7 @@
 package com.automation.core.utils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +10,11 @@ import org.testng.annotations.Test;
 import com.automation.core.configuration.ConfigurationManager;
 import com.automation.core.exceptions.CustomRuntimeException;
 import com.automation.core.reports.ExtentLogger;
+import com.google.gson.Gson;
+import com.utils.LoginAPI;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -149,14 +153,37 @@ public class APIUtil {
 	
 	public static Response post(String uri,Map<String,String> params, String reqBody, int statusCode) {
 		
-		return RestAssured.given().params(params).when().body(reqBody).post(uri).then().statusCode(statusCode).extract().response();
+		String accessToken = getToken();
+		return RestAssured.given().auth().oauth2(accessToken)
+				.header("Content-Type","application/json")
+				.contentType(ContentType.JSON).params(params)
+				.body(reqBody)
+				.when().post(uri)
+				.then().statusCode(statusCode).extract().response();
 	}
 	
 public static Response post(String uri,Map<String,String> params, File reqBody, int statusCode) {
-		
-		return RestAssured.given().params(params).when().body(reqBody).post(uri).then().statusCode(statusCode).extract().response();
+		String accessToken = getToken();
+		return RestAssured.given().auth().oauth2(accessToken).header("Content-Type","application/json").contentType(ContentType.JSON).params(params).when().body(reqBody).post(uri).then().statusCode(statusCode).extract().response();
 	}
 
+public static Response get(String uri,Map<String,String> params, int statusCode) {
+	String accessToken = getToken();
+	return RestAssured.given().auth().oauth2(accessToken).header("Content-Type","application/json").contentType(ContentType.JSON).params(params).when().get(uri).then().statusCode(statusCode).extract().response();
+}
+
+
+public static String getToken() {
+	
+	String uri = ConfigurationManager.getBundle().getString("base.uri")+"auth/login";
+	String filePath = "./data/Login.json";
+	File reqBody = new File(filePath);
+	Response response = RestAssured.given().auth().none().header("Content-Type","application/json").contentType(ContentType.JSON).when().body(reqBody).post(uri).then().statusCode(200).extract().response();
+	Gson gson = new Gson();
+	LoginAPI loginApi = gson.fromJson(response.asString(), LoginAPI.class);
+	return loginApi.data.accessToken;
+	
+}
 	@Test
 	public void getResp() {
 
